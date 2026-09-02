@@ -1,7 +1,16 @@
-/docs
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment variables
+.env
+
+# Node
 node_modules/
 .next/
-venv/
-__pycache__/
-.env
-*.pyc
+
+# IDE
+.vscode/
+.idea/
