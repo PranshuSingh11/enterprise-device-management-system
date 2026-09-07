@@ -5,27 +5,47 @@ from app.db.database import get_db
 from app.models.scanner import Scanner
 from app.schemas.scanner import ScannerResponse
 from app.schemas.scanner import ScannerCreate
+from app.services.scanner_service import create_scanner
+from app.services.scanner_service import get_scanner
+from app.services.scanner_service import get_scanners
+from app.services.scanner_service import update_scanner
+from app.services.scanner_service import delete_scanner
 
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[ScannerResponse])
-def get_scanners(db: Session = Depends(get_db)):
-    return db.query(Scanner).all()
+def get_scanners_endpoint(
+    db: Session = Depends(get_db)
+):
+    return get_scanners(db)
+
+@router.get("/{scanner_id}", response_model=ScannerResponse)
+def get_scanner_endpoint(
+    scanner_id: int,
+    db: Session = Depends(get_db)
+):
+    return get_scanner(db, scanner_id)
 
 @router.post("/",response_model=ScannerResponse)
-def create_scanner(scanner:ScannerCreate, db:Session = Depends(get_db)):
-    new_scanner = Scanner(
-        name=scanner.name,
-        serial_number=scanner.serial_number,
-        model=scanner.model,
-        status=scanner.status,
-        branch_id=scanner.branch_id
-    )
-    
-    db.add(new_scanner)
-    db.commit()
-    db.refresh(new_scanner)
+def create_scanner_endpoint(
+    scanner: ScannerCreate,
+    db: Session = Depends(get_db)
+):
+    return create_scanner(db, scanner)
 
-    return new_scanner
+@router.put("/{scanner_id}", response_model=ScannerResponse)
+def update_scanner_endpoint(
+    scanner_id: int,
+    scanner: ScannerCreate,
+    db: Session = Depends(get_db)
+):
+    return update_scanner(db, scanner_id, scanner)
+
+@router.delete("/{scanner_id}", response_model=ScannerResponse)
+def update_scanner_endpoint(
+    scanner_id: int,
+    db: Session = Depends(get_db)
+):
+    return delete_scanner(db, scanner_id)
