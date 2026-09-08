@@ -6,6 +6,9 @@ class Settings(BaseSettings):
     app_version: str
     environment: str
     database_url: str
+    jwt_secret_key: str
+    jwt_algorithm: str
+    jwt_access_token_expire_minutes: int
 
     model_config = SettingsConfigDict(
         env_file=".env",
