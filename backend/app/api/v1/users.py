@@ -7,6 +7,9 @@ from app.services.user_service import create_user, login_user
 from app.core.security import get_current_user
 from fastapi.security import OAuth2PasswordRequestForm
 
+from app.core.authorization import require_role
+from app.core.roles import Role
+
 router = APIRouter()
 
 

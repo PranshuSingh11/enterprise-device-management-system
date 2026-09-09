@@ -10,6 +10,8 @@ from app.services.branch_service import (
     delete_branch,
     update_branch
 )
+from app.core.authorization import require_role
+from app.core.roles import Role
 
 router = APIRouter()
 
@@ -17,6 +19,10 @@ router = APIRouter()
 @router.post("/", response_model=BranchResponse)
 def create_branch_endpoint(
     branch: BranchCreate,
+        current_user=Depends(require_role(
+        Role.ADMIN,
+        Role.MANAGER,
+    )),
     db: Session = Depends(get_db)
 ):
     return create_branch(db, branch)
@@ -24,6 +30,11 @@ def create_branch_endpoint(
 
 @router.get("/", response_model=list[BranchResponse])
 def get_branches_endpoint(
+    current_user=Depends(require_role(
+        Role.ADMIN,
+        Role.MANAGER,
+        Role.VIEWER
+    )),
     db: Session = Depends(get_db)
 ):
     return get_branches(db)
@@ -32,6 +43,11 @@ def get_branches_endpoint(
 @router.get("/{branch_id}", response_model=BranchResponse)
 def get_branch_endpoint(
     branch_id: int,
+    current_user=Depends(require_role(
+        Role.ADMIN,
+        Role.MANAGER,
+        Role.VIEWER
+    )),
     db: Session = Depends(get_db)
 ):
     return get_branch(db, branch_id)
@@ -40,6 +56,10 @@ def get_branch_endpoint(
 def update_branch_endpoint(
     branch_id: int,
     branch: BranchCreate,
+    current_user=Depends(require_role(
+        Role.ADMIN,
+        Role.MANAGER
+    )),
     db: Session = Depends(get_db)
 ):
     return update_branch(db, branch_id, branch)
@@ -48,6 +68,9 @@ def update_branch_endpoint(
 @router.delete("/{branch_id}", response_model=BranchResponse)
 def delete_branch_endpoint(
     branch_id: int,
+    current_user=Depends(require_role(
+        Role.ADMIN,
+    )),
     db: Session = Depends(get_db)
 ):
     return delete_branch(db, branch_id)

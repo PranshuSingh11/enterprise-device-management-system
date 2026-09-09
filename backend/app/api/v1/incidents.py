@@ -11,12 +11,19 @@ from app.services.incident_service import (
     update_incident
 )
 
+from app.core.authorization import require_role
+from app.core.roles import Role
+
 router = APIRouter()
 
 
 @router.post("/", response_model=IncidentResponse)
 def create_incident_endpoint(
     incident: IncidentCreate,
+    current_user=Depends(require_role(
+        Role.ADMIN,
+        Role.MANAGER,
+    )),
     db: Session = Depends(get_db)
 ):
     return create_incident(db, incident)
@@ -24,6 +31,11 @@ def create_incident_endpoint(
 
 @router.get("/", response_model=list[IncidentResponse])
 def get_incidents_endpoint(
+    current_user=Depends(require_role(
+        Role.ADMIN,
+        Role.MANAGER,
+        Role.VIEWER
+    )),
     db: Session = Depends(get_db)
 ):
     return get_incidents(db)
@@ -32,6 +44,11 @@ def get_incidents_endpoint(
 @router.get("/{incident_id}", response_model=IncidentResponse)
 def get_incident_endpoint(
     incident_id: int,
+    current_user=Depends(require_role(
+        Role.ADMIN,
+        Role.MANAGER,
+        Role.VIEWER
+    )),
     db: Session = Depends(get_db)
 ):
     return get_incident(db, incident_id)
@@ -40,6 +57,10 @@ def get_incident_endpoint(
 def update_incident_endpoint(
     incident_id: int,
     incident: IncidentCreate,
+    current_user=Depends(require_role(
+        Role.ADMIN,
+        Role.MANAGER,
+    )),
     db: Session = Depends(get_db)
 ):
     return update_incident(db, incident_id, incident)
@@ -48,6 +69,9 @@ def update_incident_endpoint(
 @router.delete("/{incident_id}", response_model=IncidentResponse)
 def delete_incident_endpoint(
     incident_id: int,
+    current_user=Depends(require_role(
+        Role.ADMIN,
+    )),
     db: Session = Depends(get_db)
 ):
     return delete_incident(db, incident_id)
