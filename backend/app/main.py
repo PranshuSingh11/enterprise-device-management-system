@@ -4,6 +4,8 @@ from app.core.config import settings
 from app.api.v1.scanners import router as scanner_router
 from app.api.v1.branches import router as branch_router
 from app.api.v1.incidents import router as incident_router
+from app.api.v1.users import router as user_router
+
 
 app = FastAPI(
     title=settings.app_name,
@@ -28,4 +30,10 @@ app.include_router(
     incident_router,
     prefix="/api/v1/incidents",
     tags=["Incidents"]
+)
+
+app.include_router(
+    user_router,
+    prefix="/api/v1/users",
+    tags=["Users"]
 )
