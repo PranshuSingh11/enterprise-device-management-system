@@ -1,15 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.models.scanner import Scanner
-from app.schemas.scanner import ScannerResponse
-from app.schemas.scanner import ScannerCreate
-from app.services.scanner_service import create_scanner
-from app.services.scanner_service import get_scanner
-from app.services.scanner_service import get_scanners
-from app.services.scanner_service import update_scanner
-from app.services.scanner_service import delete_scanner
+from app.schemas.scanner import (ScannerResponse, ScannerCreate, ScannerListResponse)
+from app.services.scanner_service import (create_scanner, get_scanner, get_scanners, update_scanner, delete_scanner)
 
 from app.core.authorization import require_role
 from app.core.roles import Role
@@ -18,8 +13,15 @@ from app.core.roles import Role
 router = APIRouter()
 
 
-@router.get("/", response_model=list[ScannerResponse])
+@router.get("/", response_model=ScannerListResponse)
 def get_scanners_endpoint(
+    page:int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    search: str | None = None,
+    status: str | None = None,
+    branch_id: int | None = None,
+    sort_by: str = "id",
+    sort_order: str = "asc",
     current_user=Depends(require_role(
         Role.ADMIN,
         Role.MANAGER,
@@ -27,7 +29,7 @@ def get_scanners_endpoint(
     )),
     db: Session = Depends(get_db)
 ):
-    return get_scanners(db)
+    return get_scanners(db,page,page_size,search,status,branch_id,sort_by,sort_order)
 
 @router.get("/{scanner_id}", response_model=ScannerResponse)
 def get_scanner_endpoint(

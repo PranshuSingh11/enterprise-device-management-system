@@ -23,3 +23,10 @@ class IncidentResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        
+class IncidentListResponse(BaseModel):
+    items: list[IncidentResponse]
+    page: int
+    page_size: int
+    total: int
+    total_pages: int

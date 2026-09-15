@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.schemas.branch import BranchCreate, BranchResponse
+from app.schemas.branch import BranchCreate, BranchResponse, BranchListResponse
 from app.services.branch_service import (
     create_branch,
     get_branches,
@@ -12,6 +12,7 @@ from app.services.branch_service import (
 )
 from app.core.authorization import require_role
 from app.core.roles import Role
+from fastapi import APIRouter, Depends, Query
 
 router = APIRouter()
 
@@ -28,8 +29,14 @@ def create_branch_endpoint(
     return create_branch(db, branch)
 
 
-@router.get("/", response_model=list[BranchResponse])
+@router.get("/", response_model=BranchListResponse)
 def get_branches_endpoint(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    search: str | None = None,
+    status: str | None = None,
+    sort_by: str = "id",
+    sort_order: str = "asc",
     current_user=Depends(require_role(
         Role.ADMIN,
         Role.MANAGER,
@@ -37,7 +44,12 @@ def get_branches_endpoint(
     )),
     db: Session = Depends(get_db)
 ):
-    return get_branches(db)
+    return get_branches(db,page=page,
+        page_size=page_size,
+        search=search,
+        status=status,
+        sort_by=sort_by,
+        sort_order=sort_order)
 
 
 @router.get("/{branch_id}", response_model=BranchResponse)

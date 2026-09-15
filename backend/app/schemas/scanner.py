@@ -19,3 +19,10 @@ class ScannerResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+class ScannerListResponse(BaseModel):
+    items: list[ScannerResponse]
+    page: int
+    page_size: int
+    total: int
+    total_pages: int
