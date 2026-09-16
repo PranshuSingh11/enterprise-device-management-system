@@ -18,5 +18,6 @@ class Scanner(Base):
     status: Mapped[str] = mapped_column(String(50), nullable=False)
     branch_id: Mapped[int] = mapped_column(
         ForeignKey("branches.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )

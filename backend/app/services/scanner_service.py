@@ -59,13 +59,14 @@ def get_scanners(
         
     sort_column = getattr(Scanner, sort_by, Scanner.id)
     
+    total = query.count()
 
     if sort_order.lower() == "desc":
         query = query.order_by(sort_column.desc())
     else:
         query = query.order_by(sort_column.asc())
 
-    total = query.count()
+    
 
     scanners = (
         query
