@@ -65,12 +65,14 @@ def get_branches(
 
     sort_column = getattr(Branch, sort_by, Branch.id)
 
+    total = query.count()
+
     if sort_order.lower() == "desc":
         query = query.order_by(sort_column.desc())
     else:
         query = query.order_by(sort_column.asc())
 
-    total = query.count()
+    
 
     offset = (page - 1) * page_size
 
