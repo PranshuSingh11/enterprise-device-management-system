@@ -4,6 +4,9 @@ from app.models.scanner import Scanner
 from app.schemas.scanner import ScannerCreate
 from sqlalchemy import or_
 from fastapi import HTTPException
+import logging
+
+logger = logging.getLogger(__name__)
 
 ALLOWED_SORT_FIELDS = {
     "id",
@@ -111,6 +114,11 @@ def create_scanner(db: Session, scanner_data: ScannerCreate):
         db.add(new_scanner)
         db.commit()
         db.refresh(new_scanner)
+        
+        logger.info(
+        "Scanner '%s' created successfully",
+        new_scanner.name
+    )
 
     except IntegrityError:
         db.rollback()

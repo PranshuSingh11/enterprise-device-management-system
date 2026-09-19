@@ -5,6 +5,9 @@ from app.schemas.incident import IncidentCreate
 from app.models.scanner import Scanner
 from datetime import datetime,timezone
 from fastapi import HTTPException
+import logging
+
+logger = logging.getLogger(__name__)
 
 ALLOWED_STATUSES = {
     "open",
@@ -215,6 +218,12 @@ def update_incident(
 
     db.commit()
     db.refresh(incident)
+    
+    logger.info(
+    "Incident '%s' updated to status '%s'",
+    incident.id,
+    incident.status
+)
 
     return incident
 

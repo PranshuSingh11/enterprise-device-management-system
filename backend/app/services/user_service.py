@@ -5,7 +5,9 @@ from sqlalchemy.orm import Session
 from app.core.security import hash_password,verify_password, create_access_token
 from app.models.user import User
 from app.schemas.user import UserCreate
+import logging
 
+logger = logging.getLogger(__name__)
 
 
 def create_user(db: Session, user_data: UserCreate):
@@ -34,10 +36,21 @@ def login_user(db: Session, username: str, password: str):
     user = db.query(User).filter(User.username == username).first()
 
     if not user or not verify_password(password, user.password_hash):
+        
+        logger.warning(
+    "Failed authentication attempt for username '%s'",
+    username
+)
+        
         raise HTTPException(
             status_code=401,
             detail="Invalid username or password"
         )
+    
+    logger.info(
+    "User '%s' authenticated successfully",
+    user.username
+)
 
     access_token = create_access_token(user.id)
 
