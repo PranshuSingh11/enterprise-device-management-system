@@ -17,7 +17,7 @@ from fastapi import APIRouter, Depends, Query
 router = APIRouter()
 
 
-@router.post("/", response_model=BranchResponse)
+@router.post("/", response_model=BranchResponse,status_code=201)
 def create_branch_endpoint(
     branch: BranchCreate,
         current_user=Depends(require_role(

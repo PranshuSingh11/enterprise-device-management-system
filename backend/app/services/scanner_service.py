@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from app.models.scanner import Scanner
+from app.models.branch import Branch
 from app.schemas.scanner import ScannerCreate
 from sqlalchemy import or_
 from fastapi import HTTPException
@@ -109,6 +110,16 @@ def create_scanner(db: Session, scanner_data: ScannerCreate):
         status=scanner_data.status,
         branch_id=scanner_data.branch_id
     )
+    
+    branch = db.query(Branch).filter(
+    Branch.id == scanner_data.branch_id
+).first()
+
+    if not branch:
+        raise HTTPException(
+            status_code=404,
+            detail="Branch not found"
+        )
 
     try:
         db.add(new_scanner)
