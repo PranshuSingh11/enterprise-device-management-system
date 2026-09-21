@@ -17,7 +17,7 @@ from app.core.roles import Role
 router = APIRouter()
 
 
-@router.post("/", response_model=IncidentResponse)
+@router.post("/", response_model=IncidentResponse,status_code=201)
 def create_incident_endpoint(
     incident: IncidentCreate,
     current_user=Depends(require_role(

@@ -43,7 +43,7 @@ def get_scanner_endpoint(
 ):
     return get_scanner(db, scanner_id)
 
-@router.post("/",response_model=ScannerResponse)
+@router.post("/",response_model=ScannerResponse,status_code=201)
 def create_scanner_endpoint(
     scanner: ScannerCreate,
     current_user=Depends(require_role(
@@ -66,7 +66,7 @@ def update_scanner_endpoint(
 ):
     return update_scanner(db, scanner_id, scanner)
 
-@router.delete("/{scanner_id}", response_model=ScannerResponse)
+@router.delete("/{scanner_id}",status_code=204)
 def update_scanner_endpoint(
     scanner_id: int,
     current_user=Depends(require_role(
@@ -74,4 +74,4 @@ def update_scanner_endpoint(
         )),
     db: Session = Depends(get_db)
 ):
-    return delete_scanner(db, scanner_id)
+    return None
