@@ -22,13 +22,20 @@ export async function serverApiFetch<T>(
   });
 
 if (response.status === 401) {
-    cookieStore.delete("access_token");
     redirect("/login");
   }
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`);
-  }
+  const error = new Error(
+    `API request failed: ${response.status}`
+  );
+
+  Object.assign(error, {
+    status: response.status,
+  });
+
+  throw error;
+}
 
   return response.json();
 }
