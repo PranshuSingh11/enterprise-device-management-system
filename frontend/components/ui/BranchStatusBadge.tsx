@@ -1,17 +1,15 @@
-interface ScannerStatusBadgeProps {
+interface BranchStatusBadgeProps {
   status: string;
 }
 
 const statusStyles: Record<string, string> = {
   Active: "bg-green-50 text-green-700 ring-green-600/20",
   inactive: "bg-gray-100 text-gray-600 ring-gray-500/20",
-  offline: "bg-red-50 text-red-700 ring-red-600/20",
-  maintenance: "bg-amber-50 text-amber-700 ring-amber-600/20",
 };
 
-export default function ScannerStatusBadge({
+export default function BranchStatusBadge({
   status,
-}: ScannerStatusBadgeProps) {
+}: BranchStatusBadgeProps) {
   const style =
     statusStyles[status] ??
     "bg-gray-100 text-gray-600 ring-gray-500/20";

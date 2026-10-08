@@ -157,6 +157,13 @@ export default async function ScannersPage({
     className="text-sm font-medium text-blue-600 hover:text-blue-700"
   >
     View
+  </Link>&nbsp;&nbsp;
+
+    <Link
+    href={`/dashboard/scanners/${scanner.id}/edit`}
+    className="text-sm font-medium text-gray-600 hover:text-gray-900"
+  >
+    Edit
   </Link>
 </td>
                 </tr>

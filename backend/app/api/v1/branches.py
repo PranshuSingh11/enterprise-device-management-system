@@ -77,7 +77,7 @@ def update_branch_endpoint(
     return update_branch(db, branch_id, branch)
 
 
-@router.delete("/{branch_id}", response_model=BranchResponse)
+@router.delete("/{branch_id}",status_code=204)
 def delete_branch_endpoint(
     branch_id: int,
     current_user=Depends(require_role(
@@ -85,4 +85,4 @@ def delete_branch_endpoint(
     )),
     db: Session = Depends(get_db)
 ):
-    return delete_branch(db, branch_id)
+    delete_branch(db, branch_id)

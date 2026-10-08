@@ -175,5 +175,3 @@ def delete_scanner(db: Session, scanner_id: int):
 
     db.delete(scanner)
     db.commit()
-
-    return scanner

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { serverApiFetch } from "@/lib/server-api";
 import ScannerStatusBadge from "@/components/ui/ScannerStatusBadge";
 import type { Scanner } from "@/types/scanner";
+import DeleteScannerButton from "@/components/scanners/DeleteScannerButton";
 
 interface ScannerDetailPageProps {
   params: Promise<{
@@ -44,19 +45,30 @@ try {
         </Link>
       </div>
 
-      <div className="mb-6 flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
-            {scanner.name}
-          </h1>
+     <div className="mb-6 flex items-start justify-between">
+  <div>
+    <h1 className="text-2xl font-semibold text-gray-900">
+      {scanner.name}
+    </h1>
 
-          <p className="mt-1 text-sm text-gray-500">
-            Scanner details and device information.
-          </p>
-        </div>
+    <p className="mt-1 text-sm text-gray-500">
+      Scanner details and device information.
+    </p>
+  </div>
 
-        <ScannerStatusBadge status={scanner.status} />
-      </div>
+  <div className="flex items-center gap-3">
+    <Link
+      href={`/dashboard/scanners/${scanner.id}/edit`}
+      className="rounded-md border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+    >
+      Edit
+    </Link>
+
+    <DeleteScannerButton scannerId={scanner.id} />
+
+    <ScannerStatusBadge status={scanner.status} />
+  </div>
+</div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-lg border bg-white">

@@ -10,32 +10,48 @@ export async function serverApiFetch<T>(
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
 
+  if (!token) {
+    redirect("/login");
+  }
+
   const headers = new Headers(options?.headers);
 
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
-  }
+  headers.set("Authorization", `Bearer ${token}`);
 
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
     headers,
   });
 
-if (response.status === 401) {
+  if (response.status === 401) {
     redirect("/login");
   }
 
   if (!response.ok) {
-  const error = new Error(
-    `API request failed: ${response.status}`
-  );
+    let detail = `API request failed: ${response.status}`;
 
-  Object.assign(error, {
-    status: response.status,
-  });
+    try {
+      const errorData = await response.json();
 
-  throw error;
-}
+      if (errorData.detail) {
+        detail = errorData.detail;
+      }
+    } catch {
+      // Keep the default error message.
+    }
+
+    const error = new Error(detail);
+
+    Object.assign(error, {
+      status: response.status,
+    });
+
+    throw error;
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
 
   return response.json();
 }

@@ -140,4 +140,4 @@ def delete_branch(db: Session, branch_id: int):
     db.delete(branch)
     db.commit()
 
-    return branch
+    
