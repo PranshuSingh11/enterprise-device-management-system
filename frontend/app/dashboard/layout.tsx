@@ -22,10 +22,10 @@ export default async function DashboardLayout({
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
 
-      <main className="flex-1">
+      <main className="min-w-0 flex-1">
         <Header />
 
-        <section className="p-6">
+        <section className="p-4 sm:p-6">
           {children}
         </section>
       </main>

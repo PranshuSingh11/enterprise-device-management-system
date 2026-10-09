@@ -9,34 +9,33 @@ interface ScannersPageProps {
     page?: string;
     search?: string;
     status?: string;
+    branch_id?: string;
   }>;
 }
 
 export default async function ScannersPage({
   searchParams,
 }: ScannersPageProps) {
-  const params = await searchParams;
+const params = await searchParams;
 
-  const page = Number(params.page) || 1;
-  const search = params.search ?? "";
-  const status = params.status ?? "";
+const search = params.search ?? "";
+const status = params.status ?? "";
+const branchId = params.branch_id ?? "";
+const requestedPage = Number(params.page) || 1;
+const page = Math.max(1, requestedPage);
 
-  const queryParams = new URLSearchParams({
-    page: String(page),
-    page_size: "10",
-  });
+const queryParams = new URLSearchParams({
+  page: String(page),
+  page_size: "10",
+});
 
-  if (search) {
-    queryParams.set("search", search);
-  }
+if (search) queryParams.set("search", search);
+if (status) queryParams.set("status", status);
+if (branchId) queryParams.set("branch_id", branchId);
 
-  if (status) {
-    queryParams.set("status", status);
-  }
-
-  const scanners = await serverApiFetch<ScannerListResponse>(
-    `/api/v1/scanners?${queryParams.toString()}`
-  );
+const scanners = await serverApiFetch<ScannerListResponse>(
+  `/api/v1/scanners?${queryParams.toString()}`
+);
 
   return (
     <div>
