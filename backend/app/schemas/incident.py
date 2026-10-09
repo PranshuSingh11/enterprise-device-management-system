@@ -30,3 +30,7 @@ class IncidentListResponse(BaseModel):
     page_size: int
     total: int
     total_pages: int
+    
+
+class IncidentStatusUpdate(BaseModel):
+    status: str

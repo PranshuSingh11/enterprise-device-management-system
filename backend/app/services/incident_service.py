@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.models.incident import Incident
-from app.schemas.incident import IncidentCreate
+from app.schemas.incident import IncidentCreate, IncidentStatusUpdate
 from app.models.scanner import Scanner
 from datetime import datetime,timezone
 from fastapi import HTTPException
@@ -161,7 +161,7 @@ def get_incident(db: Session, incident_id: int):
 def update_incident(
     db: Session,
     incident_id: int,
-    incident_data: IncidentCreate
+    incident_data: IncidentStatusUpdate
 ):
     incident = (
         db.query(Incident)
@@ -187,34 +187,15 @@ def update_incident(
             detail=f"Invalid incident status: {incident_data.status}"
         )
 
-    if incident_data.priority not in ALLOWED_PRIORITIES:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid incident priority: {incident_data.priority}"
-        )
-
- 
-    
-    scanner = db.query(Scanner).filter(
-    Scanner.id == incident_data.scanner_id
-).first()
-
-    if scanner is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Scanner not found"
-        )
 
     if incident_data.status in {"resolved", "closed"}:
         incident.resolved_at = datetime.now(timezone.utc)
     else:
         incident.resolved_at = None
 
-    incident.title = incident_data.title
-    incident.description = incident_data.description
+
     incident.status = incident_data.status
-    incident.priority = incident_data.priority
-    incident.scanner_id = incident_data.scanner_id
+
 
     db.commit()
     db.refresh(incident)

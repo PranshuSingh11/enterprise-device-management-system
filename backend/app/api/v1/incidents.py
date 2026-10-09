@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, Query
 from app.db.database import get_db
-from app.schemas.incident import IncidentCreate, IncidentResponse, IncidentListResponse
+from app.schemas.incident import IncidentCreate, IncidentResponse, IncidentListResponse, IncidentStatusUpdate
 from app.services.incident_service import (
     create_incident,
     get_incidents,
@@ -72,7 +72,7 @@ def get_incident_endpoint(
 @router.put("/{incident_id}", response_model=IncidentResponse)
 def update_incident_endpoint(
     incident_id: int,
-    incident: IncidentCreate,
+    incident: IncidentStatusUpdate,
     current_user=Depends(require_role(
         Role.ADMIN,
         Role.MANAGER,
